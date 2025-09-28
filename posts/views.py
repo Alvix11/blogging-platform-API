@@ -6,7 +6,7 @@ from .models import Post
 from .serializers import PostSerializer
 
 # Create your views here.
-class PostListAPIView(APIView):
+class PostListView(APIView):
     """
     View to list posts using APIView
     """
@@ -20,8 +20,4 @@ class PostListAPIView(APIView):
         # Serialize data (convert to JSON)
         serializer = PostSerializer(posts, many=True)
         
-        return Response({
-            'success': True,
-            'count': len(posts),
-            'data': serializer.data
-        })
+        return Response(serializer.data, status=200)
