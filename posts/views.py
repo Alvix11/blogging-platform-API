@@ -21,3 +21,18 @@ class PostListView(APIView):
         serializer = PostSerializer(posts, many=True)
         
         return Response(serializer.data, status=200)
+
+class PostCreateView(APIView):
+    """
+    View to create post using APIView
+    """
+    
+    def post(self, request):
+        """Handles POST requests (create a post)"""
+        
+        serializer = PostSerializer(data=request.data)
+        
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=201)
+        return Response(serializer.errors, status=400)
