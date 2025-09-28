@@ -33,3 +33,21 @@ class PostCreateView(APIView):
             return Response(serializer.data, status=201) # Success: returns the created post
         
         return Response(serializer.errors, status=400) # Error: returns what failed
+
+class PostGetView(APIView):
+    
+    def get_object(self, pk):
+        try:
+            return Post.objects.get(pk=pk)
+        except Post.DoesNotExist:
+            return None
+
+    def get(self, request, pk):
+        
+        post = self.get_object(pk)
+        
+        if post is None:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+        
+        serializer = PostSerializer(post)
+        return Response(serializer.data, status=status.HTTP_200_OK)
