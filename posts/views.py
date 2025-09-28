@@ -30,9 +30,9 @@ class PostCreateView(APIView):
         
         if serializer.is_valid(): # Verify if the data is valid
             serializer.save() # Saves in the database
-            return Response(serializer.data, status=201) # Success: returns the created post
+            return Response(serializer.data, status=status.HTTP_201_CREATED) # Success: returns the created post
         
-        return Response(serializer.errors, status=400) # Error: returns what failed
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST) # Error: returns what failed
 
 class PostGetView(APIView):
     
