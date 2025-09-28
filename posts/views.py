@@ -14,13 +14,9 @@ class PostListView(APIView):
     def get(self, request):
         """Handles GET requests (list all posts)"""
         
-        # Obtain data from the database
-        posts = Post.objects.all()
-        
-        # Serialize data (convert to JSON)
-        serializer = PostSerializer(posts, many=True)
-        
-        return Response(serializer.data, status=200)
+        posts = Post.objects.all() # Obtain data from the database
+        serializer = PostSerializer(posts, many=True) # Serialize data (convert Django object to JSON)
+        return Response(serializer.data, status=200) # Success: returns the list of the posts
 
 class PostCreateView(APIView):
     """
@@ -30,9 +26,10 @@ class PostCreateView(APIView):
     def post(self, request):
         """Handles POST requests (create a post)"""
         
-        serializer = PostSerializer(data=request.data)
+        serializer = PostSerializer(data=request.data) # Deserialize data (convert JSON to Django object)
         
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=201)
-        return Response(serializer.errors, status=400)
+        if serializer.is_valid(): # Verify if the data is valid
+            serializer.save() # Saves in the database
+            return Response(serializer.data, status=201) # Success: returns the created post
+        
+        return Response(serializer.errors, status=400) # Error: returns what failed
