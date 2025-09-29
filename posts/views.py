@@ -116,3 +116,24 @@ class PostUpdateView(APIView):
         
         # Returns what failed
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+class PostDeleteView(APIView):
+    """
+    View to delete a post by primary key (pk)
+    """
+    
+    def delete(self, request, pk):
+        """
+        Handles DELETE request to delete a post.
+        """
+        
+        # Try to retrieve the post by ID
+        post = get_object(pk)
+        
+        if post is None:
+            # Returns 404 if not found
+            return Response(status=status.HTTP_404_NOT_FOUND)
+        
+        # Delete post and return to status 201
+        post.delete()
+        return Response(status=status.HTTP_202_ACCEPTED)
