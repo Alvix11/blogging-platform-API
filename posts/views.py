@@ -151,6 +151,6 @@ class PostDeleteView(APIView):
             # Returns 404 if not found
             return Response(status=status.HTTP_404_NOT_FOUND)
         
-        # Delete post and return to status 201
+        # Delete post and return to status 204
         post.delete()
-        return Response(status=status.HTTP_202_ACCEPTED)
+        return Response(status=status.HTTP_204_NO_CONTENT)
