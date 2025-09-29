@@ -20,7 +20,7 @@ class PostListView(APIView):
         # Obtain data from the database
         posts = Post.objects.all()
         
-        # Serialize data and return the post
+        # Serialize data (convert Django object to JSON) and return the post
         serializer = PostSerializer(posts, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
@@ -62,7 +62,7 @@ class PostGetView(APIView):
             # Return 404 if not found
             return Response(status=status.HTTP_404_NOT_FOUND)
         
-        # Serialize and return the post
+        # Serialize data (convert Django object to JSON) and return the post
         serializer = PostSerializer(post)
         return Response(serializer.data, status=status.HTTP_200_OK)
     
