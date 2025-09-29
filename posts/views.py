@@ -93,3 +93,26 @@ class PostUpdateView(APIView):
         
         # Returns what failed
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+    def patch(self, request, pk):
+        """
+        Handles PATCH request to partially update a post.
+        """
+        
+        # Try to retrieve the post by ID
+        post = get_object(pk)
+        
+        if post is None:
+            # Returns 404 if not found
+            return Response(status=status.HTTP_404_NOT_FOUND)
+        
+        # Deserialize data (convert JSON to Django object)
+        serializer = PostSerializer(post, data=request.data, partial=True)
+        
+        # Verify that it is valid, updates the object in the database, and return the post. 
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        
+        # Returns what failed
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
