@@ -22,7 +22,7 @@ class PostListView(APIView):
         
         # Serialize data and return the post
         serializer = PostSerializer(posts, many=True)
-        return Response(serializer.data, status=200)
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
 class PostCreateView(APIView):
     """
@@ -63,5 +63,5 @@ class PostGetView(APIView):
             return Response(status=status.HTTP_404_NOT_FOUND)
         
         # Serialize and return the post
-        serializer = PostSerializer(post) # Serialize data
-        return Response(serializer.data, status=status.HTTP_200_OK) # Success: return the post
+        serializer = PostSerializer(post)
+        return Response(serializer.data, status=status.HTTP_200_OK)
