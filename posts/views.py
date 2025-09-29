@@ -4,50 +4,64 @@ from rest_framework.response import Response
 from rest_framework import status
 from .models import Post
 from .serializers import PostSerializer
+from .utils.helpers import get_object
 
 # Create your views here.
 class PostListView(APIView):
     """
-    View to list posts using APIView
+    View to list posts using APIView.
     """
     
     def get(self, request):
-        """Handles GET requests (list all posts)"""
+        """
+        Handles GET requests (list all posts).
+        """
         
-        posts = Post.objects.all() # Obtain data from the database
-        serializer = PostSerializer(posts, many=True) # Serialize data (convert Django object to JSON)
-        return Response(serializer.data, status=200) # Success: returns the list of the posts
+        # Obtain data from the database
+        posts = Post.objects.all()
+        
+        # Serialize data and return the post
+        serializer = PostSerializer(posts, many=True)
+        return Response(serializer.data, status=200)
 
 class PostCreateView(APIView):
     """
-    View to create post using APIView
+    View to create post using APIView.
     """
     
     def post(self, request):
-        """Handles POST requests (create a post)"""
+        """
+        Handles POST requests (create a post).
+        """
         
-        serializer = PostSerializer(data=request.data) # Deserialize data (convert JSON to Django object)
+        # Deserialize data (convert JSON to Django object)
+        serializer = PostSerializer(data=request.data) 
         
-        if serializer.is_valid(): # Verify if the data is valid
-            serializer.save() # Saves in the database
-            return Response(serializer.data, status=status.HTTP_201_CREATED) # Success: returns the created post
+        # Verify that it is valid, save in the database and return the post 
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
         
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST) # Error: returns what failed
+        # Returns what failed
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 class PostGetView(APIView):
-    
-    def get_object(self, pk):
-        try:
-            return Post.objects.get(pk=pk)
-        except Post.DoesNotExist:
-            return None
+    """
+    View to retrieve a specific post by primary key (pk).
+    """
 
     def get(self, request, pk):
+        """
+        Handles GET request to return a single post.
+        """
         
-        post = self.get_object(pk)
+        # Try to retrieve the post by ID
+        post = get_object(pk)
         
         if post is None:
+            # Return 404 if not found
             return Response(status=status.HTTP_404_NOT_FOUND)
         
-        serializer = PostSerializer(post)
-        return Response(serializer.data, status=status.HTTP_200_OK)
+        # Serialize and return the post
+        serializer = PostSerializer(post) # Serialize data
+        return Response(serializer.data, status=status.HTTP_200_OK) # Success: return the post
