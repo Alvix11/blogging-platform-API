@@ -65,3 +65,31 @@ class PostGetView(APIView):
         # Serialize and return the post
         serializer = PostSerializer(post)
         return Response(serializer.data, status=status.HTTP_200_OK)
+    
+class PostUpdateView(APIView):
+    """
+    View to update a post by primary key (pk).
+    """
+    
+    def put(self, request, pk):
+        """
+        Handles PUT request to update a post.
+        """
+        
+        # Try to retrieve the post by ID
+        post = get_object(pk)
+        
+        if post is None:
+            # Returns 404 if not found
+            return Response(status=status.HTTP_404_NOT_FOUND)
+        
+        # Deserialize data (convert JSON to Django object)
+        serializer = PostSerializer(post, data=request.data)
+        
+        # Verify that it is valid, updates the object in the database, and return the post. 
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        
+        # Returns what failed
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
