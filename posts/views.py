@@ -5,6 +5,7 @@ from rest_framework import status
 from .models import Post
 from .serializers import PostSerializer
 from .utils.helpers import get_object
+from django.db.models import Q
 
 # Create your views here.
 class PostListView(APIView):
@@ -137,3 +138,28 @@ class PostDeleteView(APIView):
         # Delete post and return to status 201
         post.delete()
         return Response(status=status.HTTP_202_ACCEPTED)
+    
+class PostFilterView(APIView):
+    """
+    View to retrieve a specific entry by word that appears in title, content or category.
+    """
+    
+    def get(self, request, word):
+        """
+        Handles the GET request to return a single message using a word filter.
+        """
+        
+        # Try to retrieve posts using a word as filter
+        posts = Post.objects.filter(
+            Q(title__icontains=word) | 
+            Q(content__icontains=word) | 
+            Q(category__icontains=word)
+            )
+        
+        if posts:
+            # Serialize data (convert Django object to JSON) and return the posts
+            serializer = PostSerializer(posts, many=True)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        
+        # Returns 404 if not found
+        return Response(status=status.HTTP_404_NOT_FOUND)
