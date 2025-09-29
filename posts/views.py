@@ -18,6 +18,22 @@ class PostListView(APIView):
         Handles GET requests (list all posts).
         """
         
+        # Access the query param 
+        search = request.query_params.get('search')
+        
+        if search:
+            
+            # Try to retrieve posts using a word as filter
+            posts = Post.objects.filter(
+                Q(title__icontains=search) | 
+                Q(content__icontains=search) | 
+                Q(category__icontains=search)
+                )
+            
+            # Serialize data (convert Django object to JSON) and return the post
+            serializer = PostSerializer(posts, many=True)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        
         # Obtain data from the database
         posts = Post.objects.all()
         
@@ -138,28 +154,3 @@ class PostDeleteView(APIView):
         # Delete post and return to status 201
         post.delete()
         return Response(status=status.HTTP_202_ACCEPTED)
-    
-class PostFilterView(APIView):
-    """
-    View to retrieve a specific entry by word that appears in title, content or category.
-    """
-    
-    def get(self, request, word):
-        """
-        Handles the GET request to return a single message using a word filter.
-        """
-        
-        # Try to retrieve posts using a word as filter
-        posts = Post.objects.filter(
-            Q(title__icontains=word) | 
-            Q(content__icontains=word) | 
-            Q(category__icontains=word)
-            )
-        
-        if posts:
-            # Serialize data (convert Django object to JSON) and return the posts
-            serializer = PostSerializer(posts, many=True)
-            return Response(serializer.data, status=status.HTTP_200_OK)
-        
-        # Returns 404 if not found
-        return Response(status=status.HTTP_404_NOT_FOUND)
