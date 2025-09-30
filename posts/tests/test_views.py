@@ -169,3 +169,54 @@ class PostDeleteViewTest(APITestCase):
         
         # Database should remain unchanged when trying to delete a non-existing post
         self.assertEqual(Post.objects.count(), 1)
+
+class PostListViewTest(APITestCase):
+    
+    def setUp(self):
+        
+        self.post = Post.objects.create(
+            title = "Some title",
+            content = "Some content",
+            category = "Some category"
+        )
+        
+        self.post1 = Post.objects.create(
+            title = "Other title",
+            content = "Other content",
+            category = "Python"
+        )
+        
+        self.post2 = Post.objects.create(
+            title = "Example title",
+            content = "Python content",
+            category = "Example category"
+        )
+
+        self.url = reverse('post-list')
+    
+    def test_list_posts_get_success(self):
+        """
+        Should return the posts
+        """
+        
+        response = self.client.get(self.url)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        
+        # Verify that it returns 2 results
+        self.assertEqual(len(response.data), 3)
+        
+        # Verify that the titles are in the answer
+        titles = [post['title'] for post in response.data]
+        self.assertIn("Some title", titles)
+        self.assertIn("Other title", titles)
+        self.assertIn("Example title", titles)
+        
+    def test_list_filter_post_get_success(self):
+        """
+        Should return only posts matching the search term
+        """
+        
+        response = self.client.get(self.url, {"search": "Python"})
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        
+        self.assertEqual(len(response.data), 2)
