@@ -128,3 +128,43 @@ class PostUpdateViewTest(APITestCase):
         
         # Should fail with status code 400
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+class PostDeleteViewTest(APITestCase):
+    
+    def setUp(self):
+        
+        self.post = Post.objects.create(
+            title = "Delete title",
+            content = "Delete content",
+            category = "Delete category"
+        )
+        
+        self.url = reverse('post-delete', kwargs={'pk': self.post.pk})
+    
+    def test_delete_post_delete_success(self):
+        """
+        Should delete a post using as reference your pk
+        """
+        
+        self.assertEqual(Post.objects.count(), 1)
+        
+        response = self.client.delete(self.url)
+        
+        self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
+        
+        # Verify that it has been deleted
+        self.assertEqual(Post.objects.count(), 0)
+    
+    def test_delete_post_delete_not_found(self):
+        """
+        Should return 404 when trying to delete a post that does not exist
+        """
+        non_existing_url = reverse('post-delete', kwargs={'pk': 9999})
+        
+        self.assertEqual(Post.objects.count(), 1) # DB unchanged
+        
+        response = self.client.delete(non_existing_url)
+        
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+        
+        self.assertEqual(Post.objects.count(), 1) # Still there
