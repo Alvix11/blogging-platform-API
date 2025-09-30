@@ -6,7 +6,7 @@ from posts.models import Post
 # Create your tests here.
 class PostCreateViewTest(APITestCase):
     
-    def test_create_post_succes(self):
+    def test_create_post_success(self):
         """
         Should create a post when valid data is sent
         """
@@ -21,7 +21,6 @@ class PostCreateViewTest(APITestCase):
         
         response = self.client.post(url, data, format='json')
         
-        # Verify that it returns 400
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         
         #Verify that it was created in the database and that the title matches
@@ -41,7 +40,91 @@ class PostCreateViewTest(APITestCase):
         
         response = self.client.post(url, data, format='json')
         
-        # Verify that it returns 400
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        
         # It should not create anything
         self.assertEqual(Post.objects.count(), 0)
+
+class PostUpdateViewTest(APITestCase):
+    
+    def setUp(self):
+        
+        # Create an initial post 
+        self.post = Post.objects.create(
+            title = "Original title",
+            content = "Original content",
+            category = "Original category"
+        )
+        
+        self.url = reverse('post-update', kwargs={'pk': self.post.pk})
+
+    def test_update_post_put_success(self):
+        """
+        Should update a post when valid data is sent
+        """
+        
+        data = {
+            "title": "Update title",
+            "content": "Update content",
+            "category": "C++"
+        }
+
+        response = self.client.put(self.url, data, format='json')
+        
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        
+        self.post.refresh_from_db()
+        
+        # Verify changes
+        self.assertEqual(self.post.title, "Update title")
+        self.assertEqual(self.post.content, "Update content")
+        self.assertEqual(self.post.category, "C++")
+        
+    def test_update_post_put_invalid_data(self):
+        """
+        Should fail when invalid data is sent
+        """
+        
+        data = {
+            "title": "", # title empty
+            "content": "Still some content",
+            "category": "Go"
+        }
+        
+        response = self.client.put(self.url, data, format="json")
+        
+        # Should fail with status code 400
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+    
+    def test_update_post_patch_success(self):
+        """
+        Should update a post partially when valid data is sent
+        """
+        
+        data = {
+            "content": "Update content"
+        }
+        
+        response = self.client.patch(self.url, data, format='json')
+        
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        
+        self.post.refresh_from_db()
+        
+        # Verify that they are the same and have not been updated
+        self.assertEqual(self.post.title, "Original title")
+        self.assertEqual(self.post.category, "Original category")
+        
+        # Verify changes
+        self.assertEqual(self.post.content, "Update content")
+    
+    def test_update_post_patch_invalid_data(self):
+        
+        data = {
+            "content": "", # content empty
+        }
+        
+        response = self.client.patch(self.url, data, format="json")
+        
+        # Should fail with status code 400
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
