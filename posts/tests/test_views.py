@@ -202,7 +202,7 @@ class PostListViewTest(APITestCase):
         response = self.client.get(self.url)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         
-        # Verify that it returns 2 results
+        # Verify that it returns 3 results
         self.assertEqual(len(response.data), 3)
         
         # Verify that the titles are in the answer
@@ -210,8 +210,8 @@ class PostListViewTest(APITestCase):
         self.assertIn("Some title", titles)
         self.assertIn("Other title", titles)
         self.assertIn("Example title", titles)
-        
-    def test_list_filter_post_get_success(self):
+    
+    def test_list_posts_search_filter_success(self):
         """
         Should return only posts matching the search term
         """
@@ -219,4 +219,30 @@ class PostListViewTest(APITestCase):
         response = self.client.get(self.url, {"search": "Python"})
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         
+        # Verify that it returns 3 results
         self.assertEqual(len(response.data), 2)
+        
+        # Verify content returned
+        titles = [post["title"] for post in response.data]
+        contents = [post["content"] for post in response.data]
+        categories = [post["category"] for post in response.data]
+        
+        self.assertTrue(
+            any("Python" in title for title in titles) or
+            any("Python" in content for content in contents) or
+            any("Python" in category for category in categories)
+        )
+    
+    def test_retrieve_post_success(self):
+        """
+        Should return the post that matches the pk
+        """
+        
+        url_with_pk = reverse('post-get', kwargs={'pk': self.post.pk})
+        
+        response = self.client.get(url_with_pk)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        
+        self.assertEqual(response.data["title"], "Some title")
+        self.assertEqual(response.data["content"], "Some content")
+        self.assertEqual(response.data["category"], "Some category")
