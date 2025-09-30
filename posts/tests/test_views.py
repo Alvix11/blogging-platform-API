@@ -167,4 +167,5 @@ class PostDeleteViewTest(APITestCase):
         
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
         
-        self.assertEqual(Post.objects.count(), 1) # Still there
+        # Database should remain unchanged when trying to delete a non-existing post
+        self.assertEqual(Post.objects.count(), 1)
