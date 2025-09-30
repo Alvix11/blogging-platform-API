@@ -20,7 +20,6 @@ class PostCreateViewTest(APITestCase):
         }
         
         response = self.client.post(url, data, format='json')
-        
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         
         #Verify that it was created in the database and that the title matches
@@ -39,7 +38,6 @@ class PostCreateViewTest(APITestCase):
         }
         
         response = self.client.post(url, data, format='json')
-        
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
         
         # It should not create anything
@@ -70,7 +68,6 @@ class PostUpdateViewTest(APITestCase):
         }
 
         response = self.client.put(self.url, data, format='json')
-        
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         
         self.post.refresh_from_db()
@@ -92,7 +89,6 @@ class PostUpdateViewTest(APITestCase):
         }
         
         response = self.client.put(self.url, data, format="json")
-        
         # Should fail with status code 400
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
     
@@ -106,7 +102,6 @@ class PostUpdateViewTest(APITestCase):
         }
         
         response = self.client.patch(self.url, data, format='json')
-        
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         
         self.post.refresh_from_db()
@@ -125,7 +120,6 @@ class PostUpdateViewTest(APITestCase):
         }
         
         response = self.client.patch(self.url, data, format="json")
-        
         # Should fail with status code 400
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
@@ -146,10 +140,7 @@ class PostDeleteViewTest(APITestCase):
         Should delete a post using as reference your pk
         """
         
-        self.assertEqual(Post.objects.count(), 1)
-        
         response = self.client.delete(self.url)
-        
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
         
         # Verify that it has been deleted
@@ -164,7 +155,6 @@ class PostDeleteViewTest(APITestCase):
         self.assertEqual(Post.objects.count(), 1) # DB unchanged
         
         response = self.client.delete(non_existing_url)
-        
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
         
         # Database should remain unchanged when trying to delete a non-existing post
