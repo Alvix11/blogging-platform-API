@@ -209,7 +209,7 @@ class PostListViewTest(APITestCase):
         response = self.client.get(self.url, {"search": "Python"})
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         
-        # Verify that it returns 3 results
+        # Verify that it returns 2 results
         self.assertEqual(len(response.data), 2)
         
         # Verify content returned
