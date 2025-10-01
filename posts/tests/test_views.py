@@ -115,13 +115,15 @@ class PostUpdateViewTest(APITestCase):
         self.assertEqual(self.post.content, "Update content")
     
     def test_update_post_patch_invalid_data(self):
+        """
+        Should fail when invalid data is sent
+        """
         
         data = {
             "content": "", # content empty
         }
         
         response = self.client.patch(self.url, data, format="json")
-        # Should fail with status code 400
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
 class PostDeleteViewTest(APITestCase):
