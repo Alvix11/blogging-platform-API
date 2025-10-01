@@ -34,7 +34,8 @@ class PostCreateViewTest(APITestCase):
         url = reverse('post-create')
         
         data = {
-            "content": "This is the content of the post."
+            "content": "This is the content of the post.",
+            "category": "This is the category"
         }
         
         response = self.client.post(url, data, format='json')
