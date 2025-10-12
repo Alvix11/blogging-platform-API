@@ -116,7 +116,7 @@ Sensitive values include `DB_PASSWORD` and `SECRET_KEY`.
 
 ### **License**
 
-* MIT License — see `LICENSE` (LICENSE)
+* MIT License — see [LICENSE](LICENSE)
 
 ---
 
