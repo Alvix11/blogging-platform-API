@@ -72,7 +72,7 @@ python manage.py runserver
 * Common entry points:
 
   * Admin panel: [http://127.0.0.1:8000/admin/](http://127.0.0.1:8000/admin/)
-  * API root: defined in `core/urls.py` (default `/`)
+  * API Root: Located at / (default) and configured in core/urls.py. Provides the main navigation point for all API endpoints.
 
 ---
 
@@ -131,8 +131,8 @@ Sensitive values include `DB_PASSWORD` and `SECRET_KEY`.
 
 ### **Final Notes**
 
+* Make sure `core/.env` is included in `.gitignore` to avoid uploading sensitive credentials.
+* Adjust any DRF settings in `core/settings.py` according to your environment if needed.
 * This project is based on the learning and practice projects suggested by [roadmap.sh](https://roadmap.sh/projects/blogging-platform-api), a popular resource for developers.
-* Make sure `core/.env` is listed in your `.gitignore` (it already is) to avoid uploading credentials.
-* Add or adjust DRF configuration in `core/settings.py` depending on your environment (e.g., `REST_FRAMEWORK`).
 
 ---
