@@ -125,12 +125,13 @@ Sensitive values include `DB_PASSWORD` and `SECRET_KEY`.
 * **Alvin Angulo**
 
   * GitHub: [https://github.com/alvix11](https://github.com/alvix11)
-  * LinkedIn: [https://www.linkedin.com/in/your-profile](https://www.linkedin.com/in/alvin-angulo)
+  * LinkedIn: [https://www.linkedin.com/in/alvin-angulo](https://www.linkedin.com/in/alvin-angulo)
 
 ---
 
 ### **Final Notes**
 
+* This project is based on the learning and practice projects suggested by [roadmap.sh](https://roadmap.sh/projects/blogging-platform-api), a popular resource for developers.
 * Make sure `core/.env` is listed in your `.gitignore` (it already is) to avoid uploading credentials.
 * Add or adjust DRF configuration in `core/settings.py` depending on your environment (e.g., `REST_FRAMEWORK`).
 
