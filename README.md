@@ -1,6 +1,6 @@
 # 📝 Blogging Platform API
 
-**Short Description**
+### 🧾 Description
 
 * REST API to manage posts (create, read, update, delete) built with Django and Django REST Framework. Ideal for learning or as a base for a blog or content microservice.
 
